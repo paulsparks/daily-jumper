@@ -13,25 +13,24 @@ public class PlayerController : MonoBehaviour
 
     bool facingRight = true;
     float moveDirection = 0;
+    float airHorizontalVel = 0;
     bool isGrounded = false;
     Rigidbody2D r2d;
     BoxCollider2D mainCollider;
-    Transform t;
     Animator animator;
 
     // Start is called before the first frame update
     void Start() {
-        t = transform;
         r2d = GetComponent<Rigidbody2D>();
         mainCollider = GetComponent<BoxCollider2D>();
         r2d.freezeRotation = true;
         r2d.gravityScale = gravityScale;
-        facingRight = t.localScale.x > 0;
+        facingRight = transform.localScale.x > 0;
         animator = GetComponent<Animator>();
     }
 
     void Update() {
-        if ((Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D)) && (isGrounded || Mathf.Abs(r2d.velocity.x) > 0.01f)) {
+        if ((Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D)) && isGrounded) {
             moveDirection = Input.GetKey(KeyCode.A) ? -1 : 1;
         } else if (isGrounded || r2d.velocity.magnitude < 0.01f) {
             moveDirection = 0;
@@ -39,11 +38,11 @@ public class PlayerController : MonoBehaviour
         if (moveDirection != 0) {
             if (moveDirection > 0 && !facingRight) {
                 facingRight = true;
-                t.localScale = new Vector3(Mathf.Abs(t.localScale.x), t.localScale.y, transform.localScale.z);
+                transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
             }
             if (moveDirection < 0 && facingRight) {
                 facingRight = false;
-                t.localScale = new Vector3(-Mathf.Abs(t.localScale.x), t.localScale.y, t.localScale.z);
+                transform.localScale = new Vector3(-Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
             }
         }
 
@@ -54,14 +53,20 @@ public class PlayerController : MonoBehaviour
             } else if (Input.GetKeyUp(KeyCode.Space)) {
                 r2d.velocity = new Vector2(r2d.velocity.x, jumpHeight);
             } else {
+                airHorizontalVel = 0;
                 animator.ResetTrigger("letGo");
                 animator.SetTrigger("goIdle");
             }
         } else {
+            airHorizontalVel = moveDirection;
             animator.ResetTrigger("charge");
+            animator.ResetTrigger("goIdle");
             animator.SetTrigger("letGo");
-            Debug.Log("hit else");
         }
+        Debug.Log(r2d.velocity.magnitude);
+        // if (r2d.velocity.magnitude < 0.01f) {
+
+        // }
     }
 
     void FixedUpdate() {
@@ -83,8 +88,8 @@ public class PlayerController : MonoBehaviour
                 }
             }
         }
-
-        r2d.velocity = new Vector2((moveDirection) * maxSpeed, r2d.velocity.y);
+        Debug.Log(airHorizontalVel);
+        r2d.velocity = new Vector2((airHorizontalVel) * maxSpeed, r2d.velocity.y);
 
         Debug.DrawLine(groundCheckPos, groundCheckPos - new Vector3(0, colliderRadius, 0), isGrounded ? Color.green : Color.red);
         Debug.DrawLine(groundCheckPos, groundCheckPos - new Vector3(colliderRadius, 0, 0), isGrounded ? Color.green : Color.red);
