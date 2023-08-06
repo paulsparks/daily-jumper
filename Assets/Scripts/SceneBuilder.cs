@@ -14,6 +14,7 @@ public class SceneBuilder : MonoBehaviour{
     private float cameraHeight;
     private Vector3 initialPlayerTransformPosition;
     private int stage = 0;
+    // private Vector3[][] levels;
     
     // Start is called before the first frame update
     void Start() {

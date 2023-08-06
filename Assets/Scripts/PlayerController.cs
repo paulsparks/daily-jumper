@@ -67,12 +67,13 @@ public class PlayerController : MonoBehaviour
 
     void CycleJumpHeight() {
         if (jumpHeight <= 16 && jumpHeight >= 0) {
-            jumpHeight += 7f * Time.deltaTime;
-        } else if (jumpHeight >= 16) {
-            jumpHeight = 0;
-        } else if (jumpHeight < 0) {
-            jumpHeight = 16;
+            jumpHeight += 12f * Time.deltaTime;
         }
+        // else if (jumpHeight >= 16) {
+        //     jumpHeight = 0;
+        // } else if (jumpHeight < 0) {
+        //     jumpHeight = 16;
+        // }
     }
 
     void FixedUpdate() {
