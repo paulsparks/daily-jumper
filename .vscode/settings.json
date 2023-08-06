@@ -58,5 +58,9 @@
         "Temp/":true
     },
     "omnisharp.enableRoslynAnalyzers": true,
+<<<<<<< HEAD
     "dotnet.defaultSolution": "DailyJumper.sln"
+=======
+    "dotnet.defaultSolution": "daily-jumper.sln"
+>>>>>>> 6d8cc967e645e34f3def36e1be7854f40337f92c
 }
