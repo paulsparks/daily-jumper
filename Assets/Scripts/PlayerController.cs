@@ -12,19 +12,15 @@ public class PlayerController : MonoBehaviour
     public float gravityScale = 3f;
 
     bool facingRight = true;
-    float moveDirection = 0;
+    float moveDirection = 1;
     float airHorizontalVel = 0;
     bool isGrounded = false;
     Rigidbody2D r2d;
-    BoxCollider2D[] colliderArray;
-    BoxCollider2D mainCollider;
     Animator animator;
 
     // Start is called before the first frame update
     void Start() {
         r2d = GetComponent<Rigidbody2D>();
-        colliderArray = GetComponents<BoxCollider2D>();
-        mainCollider = colliderArray[0];
         r2d.freezeRotation = true;
         r2d.gravityScale = gravityScale;
         facingRight = transform.localScale.x > 0;
@@ -34,18 +30,14 @@ public class PlayerController : MonoBehaviour
     void Update() {
         if ((Input.GetKey(KeyCode.A) || Input.GetKey(KeyCode.D)) && isGrounded) {
             moveDirection = Input.GetKey(KeyCode.A) ? -1 : 1;
-        } else if (isGrounded || r2d.velocity.magnitude < 0.01f) {
-            moveDirection = 0;
         }
-        if (moveDirection != 0) {
-            if (moveDirection > 0 && !facingRight) {
-                facingRight = true;
-                transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
-            }
-            if (moveDirection < 0 && facingRight) {
-                facingRight = false;
-                transform.localScale = new Vector3(-Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
-            }
+        if (moveDirection > 0 && !facingRight) {
+            facingRight = true;
+            transform.localScale = new Vector3(Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
+        }
+        if (moveDirection < 0 && facingRight) {
+            facingRight = false;
+            transform.localScale = new Vector3(-Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
         }
 
         if (isGrounded) {
@@ -65,7 +57,6 @@ public class PlayerController : MonoBehaviour
             animator.ResetTrigger("goIdle");
             animator.SetTrigger("letGo");
         }
-        Debug.Log(isGrounded);
     }
 
     void FixedUpdate() {

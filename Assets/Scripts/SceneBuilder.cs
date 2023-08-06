@@ -7,18 +7,20 @@ using UnityEngine.UI;
 public class SceneBuilder : MonoBehaviour{
 
 
+    public Transform playerTransform;
     public GameObject startingPrefab;
     private float nextPlatformYPos = (float)-1.5;
     private float platformHeightDistance = (float)1.5;
+    private float cameraHeight;
     
     // Start is called before the first frame update
     void Start()
     {
-        Debug.Log("Start");
+        cameraHeight = Camera.main.orthographicSize;
         
         Camera.main.clearFlags = CameraClearFlags.SolidColor;
         Camera.main.backgroundColor = Color.clear;
-        for (int i = 0; i < 5; i++) 
+        for (int i = 0; i < cameraHeight; i++) 
         {
             // Range -9.5 to 7
             Instantiate(startingPrefab, new Vector3(Random.Range(platformHeightDistance-9.5f, 7f), nextPlatformYPos, 0), Quaternion.identity);
@@ -31,14 +33,13 @@ public class SceneBuilder : MonoBehaviour{
     }
 
     // Update is called once per frame
-    void Update()
-    {
+    void Update() {
+        cameraHeight = Camera.main.orthographicSize;
     }
 
     // Set Main Camera Rect View Color
     void DrawOneRow(){
         Camera mainCamera = Camera.main;
-
         float viewportWidth = mainCamera.pixelWidth;
         float viewportHeight = mainCamera.pixelHeight / 4;
 
