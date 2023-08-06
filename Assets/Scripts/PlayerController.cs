@@ -8,8 +8,9 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     public float maxSpeed = 3f;
-    public float jumpHeight = 15f;
+    public float jumpHeight = 0f;
     public float gravityScale = 3f;
+    public Transform indicator;
 
     bool facingRight = true;
     float moveDirection = 1;
@@ -44,6 +45,7 @@ public class PlayerController : MonoBehaviour
             if (Input.GetKeyDown(KeyCode.Space)) {
                 animator.ResetTrigger("goIdle");
                 animator.SetTrigger("charge");
+                jumpHeight = 0;
             } else if (Input.GetKeyUp(KeyCode.Space)) {
                 r2d.velocity = new Vector2(r2d.velocity.x, jumpHeight);
             } else {
@@ -51,11 +53,25 @@ public class PlayerController : MonoBehaviour
                 animator.ResetTrigger("letGo");
                 animator.SetTrigger("goIdle");
             }
+            if (Input.GetKey(KeyCode.Space)) {
+                CycleJumpHeight();
+            }
         } else {
             airHorizontalVel = moveDirection;
             animator.ResetTrigger("charge");
             animator.ResetTrigger("goIdle");
             animator.SetTrigger("letGo");
+        }
+        indicator.localScale = new Vector3(jumpHeight / 16, 1, 1);
+    }
+
+    void CycleJumpHeight() {
+        if (jumpHeight <= 16 && jumpHeight >= 0) {
+            jumpHeight += 7f * Time.deltaTime;
+        } else if (jumpHeight >= 16) {
+            jumpHeight = 0;
+        } else if (jumpHeight < 0) {
+            jumpHeight = 16;
         }
     }
 
