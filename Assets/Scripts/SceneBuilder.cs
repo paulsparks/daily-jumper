@@ -33,7 +33,6 @@ public class SceneBuilder : MonoBehaviour{
     // Update is called once per frame
     void Update()
     {
-        Debug.Log("Update");
     }
 
     // Set Main Camera Rect View Color

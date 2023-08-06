@@ -7,22 +7,24 @@ using UnityEngine;
 
 public class PlayerController : MonoBehaviour
 {
-    public float maxSpeed = 3.4f;
-    public float jumpHeight = 3.4f;
-    public float gravityScale = 6.5f;
+    public float maxSpeed = 3f;
+    public float jumpHeight = 15f;
+    public float gravityScale = 3f;
 
     bool facingRight = true;
     float moveDirection = 0;
     float airHorizontalVel = 0;
     bool isGrounded = false;
     Rigidbody2D r2d;
+    BoxCollider2D[] colliderArray;
     BoxCollider2D mainCollider;
     Animator animator;
 
     // Start is called before the first frame update
     void Start() {
         r2d = GetComponent<Rigidbody2D>();
-        mainCollider = GetComponent<BoxCollider2D>();
+        colliderArray = GetComponents<BoxCollider2D>();
+        mainCollider = colliderArray[0];
         r2d.freezeRotation = true;
         r2d.gravityScale = gravityScale;
         facingRight = transform.localScale.x > 0;
@@ -63,35 +65,18 @@ public class PlayerController : MonoBehaviour
             animator.ResetTrigger("goIdle");
             animator.SetTrigger("letGo");
         }
-        Debug.Log(r2d.velocity.magnitude);
-        // if (r2d.velocity.magnitude < 0.01f) {
-
-        // }
+        Debug.Log(isGrounded);
     }
 
     void FixedUpdate() {
-        Bounds colliderBounds = mainCollider.bounds;
-        float colliderRadius = mainCollider.size.x * 0.4f * Mathf.Abs(transform.localScale.x);
-        Vector3 groundCheckPos = colliderBounds.min + new Vector3(colliderBounds.size.x * 0.5f, colliderRadius * 0.9f, 0);
+        // thank god I got to purge that confusing ass code
+        r2d.velocity = new Vector2(airHorizontalVel * maxSpeed, r2d.velocity.y);
+    }
 
-        Collider2D[] colliders = Physics2D.OverlapCircleAll(groundCheckPos, colliderRadius);
-
+    void OnTriggerEnter2D(Collider2D collision) {
+        isGrounded = true;
+    }
+    void OnTriggerExit2D(Collider2D collision) {
         isGrounded = false;
-        if (colliders.Length > 0)
-        {
-            for (int i = 0; i < colliders.Length; i++)
-            {
-                if (colliders[i] != mainCollider)
-                {
-                    isGrounded = true;
-                    break;
-                }
-            }
-        }
-        Debug.Log(airHorizontalVel);
-        r2d.velocity = new Vector2((airHorizontalVel) * maxSpeed, r2d.velocity.y);
-
-        Debug.DrawLine(groundCheckPos, groundCheckPos - new Vector3(0, colliderRadius, 0), isGrounded ? Color.green : Color.red);
-        Debug.DrawLine(groundCheckPos, groundCheckPos - new Vector3(colliderRadius, 0, 0), isGrounded ? Color.green : Color.red);
     }
 }
