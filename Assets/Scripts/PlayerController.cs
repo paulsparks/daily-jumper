@@ -8,9 +8,8 @@ using UnityEngine;
 public class PlayerController : MonoBehaviour
 {
     public float maxSpeed = 3f;
-    public float jumpHeight = 0f;
+    public float jumpHeight = 2f;
     public float gravityScale = 3f;
-    public Transform indicator;
 
     bool facingRight = true;
     float moveDirection = 1;
@@ -41,11 +40,14 @@ public class PlayerController : MonoBehaviour
             transform.localScale = new Vector3(-Mathf.Abs(transform.localScale.x), transform.localScale.y, transform.localScale.z);
         }
 
+        if (Input.GetKeyDown(KeyCode.Space)) {
+            jumpHeight = 2;
+        }
+
         if (isGrounded) {
             if (Input.GetKeyDown(KeyCode.Space)) {
                 animator.ResetTrigger("goIdle");
                 animator.SetTrigger("charge");
-                jumpHeight = 0;
             } else if (Input.GetKeyUp(KeyCode.Space)) {
                 r2d.velocity = new Vector2(r2d.velocity.x, jumpHeight);
             } else {
@@ -62,18 +64,12 @@ public class PlayerController : MonoBehaviour
             animator.ResetTrigger("goIdle");
             animator.SetTrigger("letGo");
         }
-        indicator.localScale = new Vector3(jumpHeight / 16, 1, 1);
     }
 
     void CycleJumpHeight() {
         if (jumpHeight <= 16 && jumpHeight >= 0) {
-            jumpHeight += 12f * Time.deltaTime;
+            jumpHeight += 16f * Time.deltaTime;
         }
-        // else if (jumpHeight >= 16) {
-        //     jumpHeight = 0;
-        // } else if (jumpHeight < 0) {
-        //     jumpHeight = 16;
-        // }
     }
 
     void FixedUpdate() {
